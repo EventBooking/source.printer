@@ -1,0 +1,12 @@
+﻿using System.Collections.Generic;
+
+namespace SourcePrinter.Config
+{
+    public interface IConfig
+    {
+        string SourcePath { get; }
+        string TargetFile { get; }
+        IEnumerable<string> Extensions { get; }
+        IEnumerable<string> DirectoryBlacklist { get; }
+    }
+}
