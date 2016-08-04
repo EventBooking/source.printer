@@ -11,9 +11,9 @@ namespace SourcePrinter.Application
     {
         private readonly IConfig _config;
         private readonly IFileGlommer _glommer;
-        private readonly ISourceFormatterFactory _formatterFactory;
+        private readonly IFormatterFactory _formatterFactory;
 
-        public SourcePrinter( IConfig config, IFileGlommer glommer, ISourceFormatterFactory formatterFactory )
+        public SourcePrinter( IConfig config, IFileGlommer glommer, IFormatterFactory formatterFactory )
         {
             _config = config;
             _glommer = glommer;
@@ -26,13 +26,23 @@ namespace SourcePrinter.Application
             if (!dirInfo.Exists)
                 return;
 
-            var doc = _formatterFactory.Create( _config.TargetFile );
-            doc.AddTitle( _config.ProductName, DateTime.Now );
-            ScanDirectory( dirInfo, dirInfo.FullName, doc );
-            doc.Close();
+            var tocFilePath = PathHelper.GetTableOfContentsFilePath( _config.TargetFile );
+
+            var sourceDoc = _formatterFactory.Create( _config.TargetFile );
+            var tocDoc = _formatterFactory.Create( tocFilePath );
+
+            sourceDoc.AddTitle( _config.ProductName, "Source code", DateTime.Now );
+            tocDoc.AddTitle( _config.ProductName, "Table of contents", DateTime.Now );
+
+            ScanDirectory( dirInfo, dirInfo.FullName, sourceDoc, tocDoc );
+
+            sourceDoc.Close();
+            tocDoc.Close();
         }
 
-        private void ScanDirectory( DirectoryInfo dirInfo, string rootPath, ISourceFormatter source )
+
+        private void ScanDirectory( DirectoryInfo dirInfo, string rootPath, IDocFormatter sourceDoc,
+            IDocFormatter tocDoc )
         {
             if (dirInfo.Name.StartsWith( "." ))
                 return;
@@ -50,12 +60,14 @@ namespace SourcePrinter.Application
                 var relativePath = PathHelper.GetRelativePath( file.FullName, rootPath );
                 fileModel.RelativePath = relativePath;
 
-                source.AddSourceFile( fileModel );
+                sourceDoc.AddSourceFile( fileModel );
+
+                tocDoc.AddTableOfContentsLine( fileModel.RelativePath, fileModel.Lines.Count(), fileModel.Checksum );
             }
 
             foreach (var dir in dirInfo.EnumerateDirectories())
             {
-                ScanDirectory( dir, rootPath, source );
+                ScanDirectory( dir, rootPath, sourceDoc, tocDoc );
             }
         }
     }

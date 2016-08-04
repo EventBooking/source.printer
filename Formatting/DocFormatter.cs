@@ -8,17 +8,18 @@ using SourcePrinter.FileReading;
 
 namespace SourcePrinter.Formatting
 {
-    public class SourceFormatter : ISourceFormatter
+    public class DocFormatter : IDocFormatter
     {
         private readonly Document _doc;
         private readonly Font _titleFont;
         private readonly Font _dateFont;
         private readonly Font _fileHeaderFont;
         private readonly Font _sourceLineFont;
+        private readonly Font _tocFont;
 
-        public SourceFormatter( string filePath )
+        public DocFormatter( string filePath )
         {
-            _doc = new Document( PageSize.LEGAL );
+            _doc = new Document( PageSize.LETTER );
             PdfWriter.GetInstance( _doc, new FileStream( filePath, FileMode.Create ) );
             _doc.Open();
 
@@ -26,14 +27,19 @@ namespace SourcePrinter.Formatting
             _dateFont = new Font( Font.FontFamily.HELVETICA, 12f, Font.NORMAL, BaseColor.LIGHT_GRAY );
             _fileHeaderFont = new Font( Font.FontFamily.COURIER, 9f, Font.BOLD, BaseColor.LIGHT_GRAY );
             _sourceLineFont = new Font( Font.FontFamily.COURIER, 6f, Font.NORMAL, BaseColor.BLACK );
+            _tocFont = new Font( Font.FontFamily.COURIER, 8f, Font.NORMAL, BaseColor.BLACK );
         }
 
-        public void AddTitle( string title, DateTime date )
+        public void AddTitle( string title, string subtitle, DateTime date )
         {
+            var formattedDate = date.ToLongDateString();
+
             AddParagraph( title, _titleFont );
-            AddParagraph( date.ToLongDateString(), _dateFont );
+            AddParagraph( $"{subtitle} - {formattedDate}", _dateFont );
             AddBlankLine();
+
             _doc.AddTitle( title );
+            _doc.AddSubject( subtitle );
             _doc.AddCreationDate();
         }
 
@@ -50,6 +56,13 @@ namespace SourcePrinter.Formatting
 
                 AddParagraph( processed, _sourceLineFont );
             }
+            AddBlankLine();
+        }
+
+        public void AddTableOfContentsLine( string relativePath, int countLines, string checksum )
+        {
+            AddParagraph( relativePath, _tocFont );
+            AddParagraph( $"{countLines} lines / MD5 checksum = {checksum}", _tocFont );
             AddBlankLine();
         }
 

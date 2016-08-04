@@ -57,10 +57,10 @@
     <Compile Include="Config\Options.cs" />
     <Compile Include="FileReading\IFileGlommer.cs" />
     <Compile Include="FileReading\SourceFileModel.cs" />
-    <Compile Include="Formatting\SourceFormatter.cs" />
-    <Compile Include="Formatting\SourceFormatterFactory.cs" />
-    <Compile Include="Formatting\ISourceFormatter.cs" />
-    <Compile Include="Formatting\ISourceFormatterFactory.cs" />
+    <Compile Include="Formatting\DocFormatter.cs" />
+    <Compile Include="Formatting\FormatterFactory.cs" />
+    <Compile Include="Formatting\IDocFormatter.cs" />
+    <Compile Include="Formatting\IFormatterFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Application\PathHelper.cs" />

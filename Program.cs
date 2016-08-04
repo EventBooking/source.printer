@@ -39,7 +39,7 @@ namespace SourcePrinter
                 ProductName = options.Product,
             };
 
-            var sp = new Application.SourcePrinter( config, new FileGlommer(), new SourceFormatterFactory() );
+            var sp = new Application.SourcePrinter( config, new FileGlommer(), new FormatterFactory() );
             sp.WriteToPdf();
 
             return 0;
