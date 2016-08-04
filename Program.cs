@@ -36,6 +36,7 @@ namespace SourcePrinter
             {
                 SourcePath = options.Source,
                 TargetFile = options.Target,
+                ProductName = options.Product,
             };
 
             var sp = new Application.SourcePrinter( config, new FileGlommer(), new SourceFormatterFactory() );

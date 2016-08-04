@@ -4,6 +4,7 @@ namespace SourcePrinter.Config
 {
     public class Config : IConfig
     {
+        public string ProductName { get; set; }
         public string SourcePath { get; set; }
         public string TargetFile { get; set; }
         public IEnumerable<string> Extensions { get; set; } = new List<string> { ".cs" };

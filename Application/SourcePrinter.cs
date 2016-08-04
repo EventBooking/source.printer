@@ -27,6 +27,7 @@ namespace SourcePrinter.Application
                 return;
 
             var doc = _formatterFactory.Create( _config.TargetFile );
+            doc.AddTitle( _config.ProductName, DateTime.Now );
             ScanDirectory( dirInfo, dirInfo.FullName, doc );
             doc.Close();
         }
